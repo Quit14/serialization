@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
@@ -5,6 +6,7 @@ public class Main {
     static String[] items = {"Мука", "Яйца", "Сахар",
             "Соль", "Яблоко", "Мороженое"};
     static double[] prices = {116.99, 79.90, 156.00, 35.60, 136.50, 271.50};
+
 
     static void printItems() {
         System.out.println("Список возможных товаров для покупки:");
@@ -20,10 +22,12 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Basket basket = new Basket(items, prices);
+        File file = new File("basket.txt");
         Scanner scanner = new Scanner(System.in);
         printItems();
         while (true) {
+            Basket basket = file.exists() ? Basket.loadFromTxtFile(file) : new Basket(items, prices);
+
             printOptions();
             String input = scanner.nextLine();
             if ("end".equals(input)) {
@@ -50,6 +54,7 @@ public class Main {
                     continue;
                 }
                 basket.addToCart(productNumber, amount);
+                basket.saveTxt(file);
 
 
             } catch (NumberFormatException e) {
