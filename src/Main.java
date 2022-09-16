@@ -22,11 +22,11 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        File file = new File("basket.bin");
+        File file = new File("basket.bin"); //создание файла
         Scanner scanner = new Scanner(System.in);
         printItems();
-        while (true) {
-            Basket basket = file.exists() ? Basket.loadFromTxtFile(file) : new Basket(items, prices);
+        while (true) { //создаем заново или восстанавливаем корзину
+            Basket basket = file.exists() ? Basket.loadFromBinFile(file) : new Basket(items, prices);
 
             printOptions();
             String input = scanner.nextLine();
@@ -53,8 +53,8 @@ public class Main {
                     System.out.println("Количество товара в корзине не должно быть меньше 0!");
                     continue;
                 }
-                basket.addToCart(productNumber, amount);
-                basket.saveTxt(file);
+                basket.addToCart(productNumber, amount); //добавить продукты в корзину
+                basket.saveBin(file, basket); //записать покупки в файл
 
 
             } catch (NumberFormatException e) {

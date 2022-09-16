@@ -1,6 +1,4 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,28 +29,29 @@ public class Basket implements Serializable {
         return amount;
     }
 
-    protected void saveTxt(File file) {
-        try (PrintWriter saveTxt = new PrintWriter(file)) {
-            for (int i = 0; i < names.length; i++) {
-                saveTxt.print(names[i] + " " + prices[i] + " " + amount[i] + "\n");
-            }
+//Сериализация - создание файла
+    public void saveBin(File file, Basket basket) {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+            out.writeObject(basket);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
-    public static Basket loadFromBinFile (File file){
+// Десериализация - восстановление корзины
+    public static Basket loadFromBinFile(File file) {
+        Basket basket = null;
         try {
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-            Basket basket = (Basket) in.readObject();
-
-        } return basket;
-        catch (IOException e) {
+            basket = (Basket) in.readObject();
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
+        return basket;
+    }
 
 
     public void printCart() {
@@ -77,12 +76,4 @@ public class Basket implements Serializable {
                 + totalSum + " рублей");
     }
 
-    public void saveBin(File file, Basket basket) {
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
-            out.writeObject(basket);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
