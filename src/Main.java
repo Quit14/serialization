@@ -22,7 +22,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        File file = new File("basket.txt");
+        File file = new File("basket.bin");
         Scanner scanner = new Scanner(System.in);
         printItems();
         while (true) {

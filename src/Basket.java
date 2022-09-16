@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
-public class Basket {
+public class Basket implements Serializable {
     private String[] names;
     private double[] prices;
     private int[] amount;
@@ -34,36 +34,25 @@ public class Basket {
     protected void saveTxt(File file) {
         try (PrintWriter saveTxt = new PrintWriter(file)) {
             for (int i = 0; i < names.length; i++) {
-                saveTxt.print(names[i] + " " + prices[i]+ " " + amount[i] + "\n");
+                saveTxt.print(names[i] + " " + prices[i] + " " + amount[i] + "\n");
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Basket loadFromTxtFile(File textFile) {
+    public static Basket loadFromBinFile (File file){
         try {
-            BufferedReader buff = new BufferedReader(new FileReader(textFile));
-            String s;
-            List<String> names = new ArrayList<>();
-            List<Double> prices = new ArrayList<>();
-            List<Integer> amount = new ArrayList<>();
-            while ((s = buff.readLine()) != null) {
-                String[] parts = s.split(" ");
-                names.add(parts[0]);
-                prices.add(Double.parseDouble(parts[1]));
-                amount.add(Integer.parseInt(parts[2]));
-            }
-            String[] name = names.toArray(new String[names.size()]);
-            double[] price = prices.stream().mapToDouble(d -> d).toArray();
-            int[] amounts = amount.stream().mapToInt(i -> i).toArray();
-            buff.close();
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+            Basket basket = (Basket) in.readObject();
 
-            return new Basket(name, price, amounts);
-        } catch (IOException e) {
+        } return basket;
+        catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
+
 
 
     public void printCart() {
@@ -86,5 +75,14 @@ public class Basket {
                 .sum();
         System.out.println("Итого: " + totalAmount + " позиций на общую сумму "
                 + totalSum + " рублей");
+    }
+
+    public void saveBin(File file, Basket basket) {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+            out.writeObject(basket);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
