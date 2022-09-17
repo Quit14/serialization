@@ -31,8 +31,7 @@ public class Basket implements Serializable {
 
 //Сериализация - создание файла
     public void saveBin(File file, Basket basket) {
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
             out.writeObject(basket);
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,8 +41,7 @@ public class Basket implements Serializable {
 // Десериализация - восстановление корзины
     public static Basket loadFromBinFile(File file) {
         Basket basket = null;
-        try {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
             basket = (Basket) in.readObject();
         } catch (IOException e) {
             e.printStackTrace();
