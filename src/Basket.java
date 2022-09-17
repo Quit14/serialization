@@ -42,8 +42,7 @@ public class Basket {
     }
 //воссоздание корзины из файла
     public static Basket loadFromTxtFile(File textFile) {
-        try {
-            BufferedReader buff = new BufferedReader(new FileReader(textFile));
+        try (BufferedReader buff = new BufferedReader(new FileReader(textFile))) {
             String s;
             List<String> names = new ArrayList<>();
             List<Double> prices = new ArrayList<>();
