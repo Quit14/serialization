@@ -1,4 +1,8 @@
+import org.json.simple.parser.ParseException;
+
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
@@ -21,12 +25,14 @@ public class Main {
         System.out.println("Выберите товар и его количество или введите \"end\"");
     }
 
-    public static void main(String[] args) {
-        File file = new File("basket.txt"); //создание файла
+    public static void main(String[] args) throws IOException, ParseException {
+        File file = new File("basket.json"); //создание файла
         Scanner scanner = new Scanner(System.in);
         printItems();
+        ClientLog log = new ClientLog(); //создаем журнал для записи ввода пользователя
         while (true) { //воссоздаем корзину или создаем заново
-            Basket basket = file.exists() ? Basket.loadFromTxtFile(file) : new Basket(items, prices);
+            File txtLog = new File("txtLog.txt");
+            Basket basket = file.exists() ? Basket.loadFromJsonFile (file) : new Basket(items, prices);
 
             printOptions();
             String input = scanner.nextLine();
@@ -54,7 +60,9 @@ public class Main {
                     continue;
                 }
                 basket.addToCart(productNumber, amount);
-                basket.saveTxt(file); //запись в файл
+                log.log(productNumber, amount);
+                log.exportAsCSV(txtLog);
+                basket.saveJson(file); //запись в файл
 
 
             } catch (NumberFormatException e) {
